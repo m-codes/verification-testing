@@ -95,43 +95,49 @@ public class Rate {
         return isValid;
     }
 
-    public double checkKind(double amount) {
+    private BigDecimal reductions(BigDecimal bigDecAmount) {
+        BigDecimal studentThreshold = new BigDecimal("5.5");
+        BigDecimal studentReductionPercentage = new BigDecimal("0.25");
+        BigDecimal staffMaxPayable = new BigDecimal("16.0");
+        BigDecimal managementMinPayable = new BigDecimal("3.0");
+        BigDecimal visitorThresholdAndDeduction = new BigDecimal("8.0");
+        BigDecimal visitorReductionPercentage = new BigDecimal("0.5");
 
-        if (this.kind == CarParkKind.STUDENT && amount > 5.50) {
-            //25% reduction on any amount above 5.50
-            amount -= (amount * .25);
 
-        } else if (this.kind == CarParkKind.STAFF && amount > 16.00) {
+        if (this.kind == CarParkKind.STUDENT && bigDecAmount.compareTo(studentThreshold) == 1) {
+            bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(studentReductionPercentage));
+            return bigDecAmount;
+
+        } else if (this.kind == CarParkKind.STAFF && bigDecAmount.compareTo(staffMaxPayable) == 1) {
             //maximum payable is 16.00 per day
-            amount = 16.00;
+            bigDecAmount = staffMaxPayable;
+            return bigDecAmount;
 
-        } else if (this.kind == CarParkKind.MANAGEMENT && amount < 3.00) {
-            //minimum payable is 3.00
-            amount = 3.00;
+        } else if (this.kind == CarParkKind.MANAGEMENT && bigDecAmount.compareTo(managementMinPayable) == -1) {
+            //maximum payable is 16.00 per day
+            bigDecAmount = managementMinPayable;
+            return bigDecAmount;
 
         } else if (this.kind == CarParkKind.VISITOR) {
-            if (amount <= 8.00) {
+            if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 || bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
                 //first 8.00 is free for visitor
-                amount = 0.00;
+                bigDecAmount = bigDecAmount.ZERO;
             } else {
-                amount -= 8;
-                amount = amount * 0.5;
+                bigDecAmount = bigDecAmount.subtract(visitorThresholdAndDeduction);
+                bigDecAmount = bigDecAmount.multiply(visitorReductionPercentage);
             }
         }
-        return amount;
+        return bigDecAmount;
     }
 
 
     public BigDecimal calculate(Period periodStay) {
         int normalRateHours = periodStay.occurences(normal);
         int reducedRateHours = periodStay.occurences(reduced);
-
         BigDecimal bigDecAmount = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).
                 add(this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
-        double amount = bigDecAmount.doubleValue();
+        BigDecimal newBigDecAmount = reductions(bigDecAmount);
 
-        amount = checkKind(amount);
-
-        return (BigDecimal.valueOf(amount));
+        return (newBigDecAmount);
     }
 }

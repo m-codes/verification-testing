@@ -287,7 +287,7 @@ public class WalshMartinTestTask2 {
         Period stayPeriod = new Period(10, 16);
 
 
-        assertEquals(new BigDecimal("45.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("45.00"), test.calculate(stayPeriod));
     }
 
     //Calculate test - SP * RR
@@ -306,7 +306,7 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 16);
 
-        assertEquals(new BigDecimal("60.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal(60), test.calculate(stayPeriod));
     }
 
     //Test if reduce period is null
@@ -425,7 +425,7 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 11);
 
-        assertEquals(new BigDecimal("0.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("0"), test.calculate(stayPeriod));
     }
 
     //Test if visitor and total greater than 8 reduction is applied
@@ -444,7 +444,7 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 17);
 
-        assertEquals(new BigDecimal("26.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("26.00"), test.calculate(stayPeriod));
     }
 
     //Test if student discount is applied
@@ -463,7 +463,7 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 12);
 
-        assertEquals(new BigDecimal("15.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("15.00"), test.calculate(stayPeriod));
     }
 
     //Test if staff max amount of 16 is applied
@@ -518,7 +518,7 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 11);
 
-        assertEquals(new BigDecimal("5.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("5"), test.calculate(stayPeriod));
     }
 
     //Test staff when max not reached
@@ -537,9 +537,27 @@ public class WalshMartinTestTask2 {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 11);
 
-        assertEquals(new BigDecimal("10.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("10"), test.calculate(stayPeriod));
     }
 
+    //Test if visitor total is equal to eight
+    @Test
+    public void TestThirtyOneVisitor() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(8);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.VISITOR;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("0"), test.calculate(stayPeriod));
+    }
 
 
 
