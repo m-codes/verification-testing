@@ -43,6 +43,7 @@ public class Rate {
 
     /**
      * Checks if two collections of periods are valid together
+     *
      * @param periods1
      * @param periods2
      * @return true if the two collections of periods are valid together
@@ -59,6 +60,7 @@ public class Rate {
 
     /**
      * checks if a collection of periods is valid
+     *
      * @param list the collection of periods to check
      * @return true if the periods do not overlap
      */
@@ -67,9 +69,9 @@ public class Rate {
         if (list.size() >= 2) {
             Period secondPeriod;
             int i = 0;
-            int lastIndex = list.size()-1;
+            int lastIndex = list.size() - 1;
             while (i < lastIndex && isValid) {
-                isValid = isValidPeriod(list.get(i), ((List<Period>)list).subList(i + 1, lastIndex+1));
+                isValid = isValidPeriod(list.get(i), ((List<Period>) list).subList(i + 1, lastIndex + 1));
                 i++;
             }
         }
@@ -78,8 +80,9 @@ public class Rate {
 
     /**
      * checks if a period is a valid addition to a collection of periods
+     *
      * @param period the Period addition
-     * @param list the collection of periods to check
+     * @param list   the collection of periods to check
      * @return true if the period does not overlap in the collecton of periods
      */
     private Boolean isValidPeriod(Period period, List<Period> list) {
@@ -91,11 +94,44 @@ public class Rate {
         }
         return isValid;
     }
+
+    public double checkKind(double amount) {
+
+        if (this.kind == CarParkKind.STUDENT && amount > 5.50) {
+            //25% reduction on any amount above 5.50
+            amount -= (amount * .25);
+
+        } else if (this.kind == CarParkKind.STAFF && amount > 16.00) {
+            //maximum payable is 16.00 per day
+            amount = 16.00;
+
+        } else if (this.kind == CarParkKind.MANAGEMENT && amount < 3.00) {
+            //minimum payable is 3.00
+            amount = 3.00;
+
+        } else if (this.kind == CarParkKind.VISITOR) {
+            if (amount <= 8.00) {
+                //first 8.00 is free for visitor
+                amount = 0.00;
+            } else {
+                amount -= 8;
+                amount = amount * 0.5;
+            }
+        }
+        return amount;
+    }
+
+
     public BigDecimal calculate(Period periodStay) {
         int normalRateHours = periodStay.occurences(normal);
         int reducedRateHours = periodStay.occurences(reduced);
-        return (this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours))).add(
-                this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
-    }
 
+        BigDecimal bigDecAmount = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).
+                add(this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
+        double amount = bigDecAmount.doubleValue();
+
+        amount = checkKind(amount);
+
+        return (BigDecimal.valueOf(amount));
+    }
 }

@@ -287,7 +287,7 @@ public class WalshMartinTestTask2 {
         Period stayPeriod = new Period(10, 16);
 
 
-        assertEquals(new BigDecimal(60), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("45.0"), test.calculate(stayPeriod));
     }
 
     //Calculate test - SP * RR
@@ -301,12 +301,12 @@ public class WalshMartinTestTask2 {
         reducedRatePeriod.add(slot2);
         BigDecimal normalRate = new BigDecimal(10);
         BigDecimal reducedRate = new BigDecimal(5);
-        CarParkKind kind = CarParkKind.STAFF;
+        CarParkKind kind = CarParkKind.MANAGEMENT;
 
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 16);
 
-        assertEquals(new BigDecimal(60), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("60.0"), test.calculate(stayPeriod));
     }
 
     //Test if reduce period is null
@@ -408,6 +408,139 @@ public class WalshMartinTestTask2 {
 
         new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
     }
+
+    //Test if visitor kind and total less than 8
+    @Test
+    public void TestFourVisitorKindOne() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(4);
+        CarParkKind kind = CarParkKind.VISITOR;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("0.0"), test.calculate(stayPeriod));
+    }
+
+    //Test if visitor and total greater than 8 reduction is applied
+    @Test
+    public void TestTwentyFiveVisitorKindTwo() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(10);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.VISITOR;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 17);
+
+        assertEquals(new BigDecimal("26.0"), test.calculate(stayPeriod));
+    }
+
+    //Test if student discount is applied
+    @Test
+    public void TestTwentySixStudent() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(10);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.STUDENT;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 12);
+
+        assertEquals(new BigDecimal("15.0"), test.calculate(stayPeriod));
+    }
+
+    //Test if staff max amount of 16 is applied
+    @Test
+    public void TestTwentySevenStaff() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(10);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.STAFF;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 14);
+
+        assertEquals(new BigDecimal("16.0"), test.calculate(stayPeriod));
+    }
+    //Test if management minimum amount of 3 is applied
+    @Test
+    public void TestTwentyEightManagement() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(2);
+        BigDecimal reducedRate = new BigDecimal(1);
+        CarParkKind kind = CarParkKind.MANAGEMENT;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("3.0"), test.calculate(stayPeriod));
+    }
+    //Test student when under discount value
+    @Test
+    public void TestTwentyNineStudent() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(5);
+        BigDecimal reducedRate = new BigDecimal(4);
+        CarParkKind kind = CarParkKind.STUDENT;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("5.0"), test.calculate(stayPeriod));
+    }
+
+    //Test staff when max not reached
+    @Test
+    public void ThirtyStaff() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(10);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.STAFF;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("10.0"), test.calculate(stayPeriod));
+    }
+
+
 
 
 }
