@@ -7,27 +7,11 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class WalshMartinTestTask2 {
-
-    //    NR >= 0
-    @Test
-    public void TestOneSuccessful() {
-        Period slot1 = new Period(10, 16);
-        Period slot2 = new Period(17, 22);
-        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
-        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
-        normalRatePeriod.add(slot1);
-        reducedRatePeriod.add(slot2);
-        BigDecimal normalRate = new BigDecimal(10);
-        BigDecimal reducedRate = new BigDecimal(5);
-        CarParkKind kind = CarParkKind.STUDENT;
-
-        new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
-    }
-
+public class RateTests {
+//NR: Normal Rate, RR: Reduced Rate, NP: Normal Period, RP: Reduced Period, SP: Stay Period
     //    NR < RR
     @Test(expected = IllegalArgumentException.class)
-    public void TestTwoLowerNr() {
+    public void Should_ThrowException_NrLessThanRr() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -41,25 +25,9 @@ public class WalshMartinTestTask2 {
         new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
     }
 
-    //    RR > NR
-    @Test(expected = IllegalArgumentException.class)
-    public void TestThreeGreaterRr() {
-        Period slot1 = new Period(10, 16);
-        Period slot2 = new Period(17, 22);
-        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
-        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
-        normalRatePeriod.add(slot1);
-        reducedRatePeriod.add(slot2);
-        BigDecimal normalRate = new BigDecimal(10);
-        BigDecimal reducedRate = new BigDecimal(11);
-        CarParkKind kind = CarParkKind.MANAGEMENT;
-
-        new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
-    }
-
     //    NP > 24
     @Test(expected = IllegalArgumentException.class)
-    public void TestFourNpGreaterThanLimit() {
+    public void Should_ThrowException_NpGreaterThan24() {
         Period slot1 = new Period(22, 25);
         Period slot2 = new Period(4,20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -75,7 +43,7 @@ public class WalshMartinTestTask2 {
 
     //    RP > 24
     @Test(expected = IllegalArgumentException.class)
-    public void TestFiveRpGreaterThanLimit() {
+    public void Should_ThrowException_RpGreaterThan24() {
         Period slot1 = new Period(10, 4);
         Period slot2 = new Period(5, 25);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -89,41 +57,9 @@ public class WalshMartinTestTask2 {
         new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
     }
 
-    //    NP < 0
-    @Test(expected = IllegalArgumentException.class)
-    public void TestSixNpLessThanZero() {
-        Period slot1 = new Period(-10, 4);
-        Period slot2 = new Period(5, 20);
-        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
-        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
-        normalRatePeriod.add(slot1);
-        reducedRatePeriod.add(slot2);
-        BigDecimal normalRate = new BigDecimal(10);
-        BigDecimal reducedRate = new BigDecimal(5);
-        CarParkKind kind = CarParkKind.STUDENT;
-
-        new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
-    }
-
-    //    RP < 0
-    @Test(expected = IllegalArgumentException.class)
-    public void TestSevenRpLessThanZero() {
-        Period slot1 = new Period(10, 4);
-        Period slot2 = new Period(-5, 20);
-        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
-        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
-        normalRatePeriod.add(slot1);
-        reducedRatePeriod.add(slot2);
-        BigDecimal normalRate = new BigDecimal(10);
-        BigDecimal reducedRate = new BigDecimal(5);
-        CarParkKind kind = CarParkKind.STUDENT;
-
-        new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
-    }
-
     //    NR == Null
     @Test(expected = IllegalArgumentException.class)
-    public void TestEightNullNr() {
+    public void Should_ThrowException_NrEquals0() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -140,7 +76,7 @@ public class WalshMartinTestTask2 {
 
     //    RR == Null
     @Test(expected = IllegalArgumentException.class)
-    public void TestNineNullRr() {
+    public void Should_ThrowException_RrEquals0() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -157,7 +93,7 @@ public class WalshMartinTestTask2 {
 
     //    NP == Null
     @Test(expected = NullPointerException.class)
-    public void TestTenNullNp() {
+    public void Should_ThrowException_NpEquals0() {
         Period slot1 = null;
         Period slot2 = new Period(5, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -174,7 +110,7 @@ public class WalshMartinTestTask2 {
 
     //    RP == Null
     @Test(expected = NullPointerException.class)
-    public void TestElevenNullRp() {
+    public void Should_ThrowException_RpEquals0() {
         Period slot1 = new Period(10, 16);
         Period slot2 = null;
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -191,7 +127,7 @@ public class WalshMartinTestTask2 {
 
     //    Periods overlapping
     @Test(expected = IllegalArgumentException.class)
-    public void TestTwelveOverlapping() {
+    public void Should_ThrowException_PeriodsOverlap() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(6, 12);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -208,7 +144,7 @@ public class WalshMartinTestTask2 {
 
     //    NR < 0
     @Test(expected = IllegalArgumentException.class)
-    public void TestThirteenNrLessThanZero() {
+    public void Should_ThrowException_NrLessThan0() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -224,7 +160,7 @@ public class WalshMartinTestTask2 {
 
     //    RR < 0
     @Test(expected = IllegalArgumentException.class)
-    public void TestFourteenRrLessThanZero() {
+    public void Should_ThrowException_RrLessThan0() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -240,7 +176,7 @@ public class WalshMartinTestTask2 {
 
     //    NP < 0
     @Test(expected = IllegalArgumentException.class)
-    public void TestFifteenNpEndLessThanZero() {
+    public void Should_ThrowException_NpLessThan0() {
         Period slot1 = new Period(10, -4);
         Period slot2 = new Period(5, 20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -256,7 +192,7 @@ public class WalshMartinTestTask2 {
 
     //    RP < 0
     @Test(expected = IllegalArgumentException.class)
-    public void TestSixteenRpEndLessThanZero() {
+    public void Should_ThrowException_RpLessThan0() {
         Period slot1 = new Period(10, 4);
         Period slot2 = new Period(5, -20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -272,7 +208,7 @@ public class WalshMartinTestTask2 {
 
     //Calculate test - SP * NR
     @Test
-    public void TestSeventeenCalculate() {
+    public void Should_AssertEquals_SpMultipliedByNr() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -292,7 +228,7 @@ public class WalshMartinTestTask2 {
 
     //Calculate test - SP * RR
     @Test
-    public void TestEighteenCalculate() {
+    public void Should_AssertEquals_SpMultipliedByRr() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -311,7 +247,7 @@ public class WalshMartinTestTask2 {
 
     //Test if reduce period is null
     @Test(expected = IllegalArgumentException.class)
-    public void TestNineteenNullReducedPeriod() {
+    public void Should_ThrowException_RpParamEqualsNull() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -327,7 +263,7 @@ public class WalshMartinTestTask2 {
 
     //Test if normal period is null
     @Test(expected = IllegalArgumentException.class)
-    public void TestTwentyNullNormalPeriod() {
+    public void Should_ThrowException_NpParamEqualsNull() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -343,7 +279,7 @@ public class WalshMartinTestTask2 {
 
     //Test if multiple list overlapping
     @Test(expected = IllegalArgumentException.class)
-    public void TestTwentyOneListsOverlapping() {
+    public void Should_ThrowException_MultiplePeriodsOverlappingIndividually() {
         Period slot1 = new Period(10, 12);
         Period slot2 = new Period(11, 13);
         Period slot3 = new Period(14, 16);
@@ -365,9 +301,9 @@ public class WalshMartinTestTask2 {
         new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
     }
 
-    //To check if period lists are valid individually
+    //To check if period lists are invalid individually
     @Test(expected = IllegalArgumentException.class)
-    public void TestTwentyTwoValidIndividually() {
+    public void Should_ThrowException_PeriodListsInvalidIndividually() {
         Period slot1 = new Period(10, 12);
         Period slot2 = new Period(11, 13);
         Period slot3 = new Period(14, 16);
@@ -387,7 +323,7 @@ public class WalshMartinTestTask2 {
 
     //Test 2 collections of periods where one list overlaps the other
     @Test (expected = IllegalArgumentException.class)
-    public void TestTwentyThreeOneListOverlap() {
+    public void Should_ThrowException_MultiplePeriodsOverlapping() {
         Period slot1 = new Period(10, 12);
         Period slot2 = new Period(12, 13);
         Period slot3 = new Period(14, 16);
@@ -411,7 +347,7 @@ public class WalshMartinTestTask2 {
 
     //Test if visitor kind and total less than 8
     @Test
-    public void TestFourVisitorKindOne() {
+    public void Should_GiveReduction_IsVisitorAndTotalLessThan8() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -430,7 +366,7 @@ public class WalshMartinTestTask2 {
 
     //Test if visitor and total greater than 8 reduction is applied
     @Test
-    public void TestTwentyFiveVisitorKindTwo() {
+    public void Should_GiveReduction_IsVisitorAndTotalGreaterThan8() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -447,9 +383,28 @@ public class WalshMartinTestTask2 {
         assertEquals(new BigDecimal("26.00"), test.calculate(stayPeriod));
     }
 
+    //Test if visitor total is equal to eight
+    @Test
+    public void Should_GiveReduction_IsVisitorAndTotalEqualTo8() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(8);
+        BigDecimal reducedRate = new BigDecimal(5);
+        CarParkKind kind = CarParkKind.VISITOR;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("0"), test.calculate(stayPeriod));
+    }
+
     //Test if student discount is applied
     @Test
-    public void TestTwentySixStudent() {
+    public void Should_GiveReduction_IsStudent() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -468,7 +423,7 @@ public class WalshMartinTestTask2 {
 
     //Test if staff max amount of 16 is applied
     @Test
-    public void TestTwentySevenStaff() {
+    public void Should_GiveReduction_IsStaffMaxTotalSixteen() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -484,9 +439,10 @@ public class WalshMartinTestTask2 {
 
         assertEquals(new BigDecimal("16.0"), test.calculate(stayPeriod));
     }
+
     //Test if management minimum amount of 3 is applied
     @Test
-    public void TestTwentyEightManagement() {
+    public void Should_GiveReduction_IsManagementMinimumTotal3() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -502,9 +458,10 @@ public class WalshMartinTestTask2 {
 
         assertEquals(new BigDecimal("3.0"), test.calculate(stayPeriod));
     }
+
     //Test student when under discount value
     @Test
-    public void TestTwentyNineStudent() {
+    public void Should_NoReduction_IsStudent() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -523,7 +480,7 @@ public class WalshMartinTestTask2 {
 
     //Test staff when max not reached
     @Test
-    public void ThirtyStaff() {
+    public void Should_NoReduction_IsStaff() {
         Period slot1 = new Period(10, 16);
         Period slot2 = new Period(17, 22);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
@@ -540,24 +497,7 @@ public class WalshMartinTestTask2 {
         assertEquals(new BigDecimal("10"), test.calculate(stayPeriod));
     }
 
-    //Test if visitor total is equal to eight
-    @Test
-    public void TestThirtyOneVisitor() {
-        Period slot1 = new Period(10, 16);
-        Period slot2 = new Period(17, 22);
-        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
-        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
-        normalRatePeriod.add(slot1);
-        reducedRatePeriod.add(slot2);
-        BigDecimal normalRate = new BigDecimal(8);
-        BigDecimal reducedRate = new BigDecimal(5);
-        CarParkKind kind = CarParkKind.VISITOR;
 
-        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
-        Period stayPeriod = new Period(10, 11);
-
-        assertEquals(new BigDecimal("0"), test.calculate(stayPeriod));
-    }
 
 
 

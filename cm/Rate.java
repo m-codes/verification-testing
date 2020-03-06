@@ -119,7 +119,8 @@ public class Rate {
             return bigDecAmount;
 
         } else if (this.kind == CarParkKind.VISITOR) {
-            if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 || bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
+            if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 ||
+                    bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
                 //first 8.00 is free for visitor
                 bigDecAmount = bigDecAmount.ZERO;
             } else {
