@@ -456,7 +456,7 @@ public class RateTests {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 11);
 
-        assertEquals(new BigDecimal("3.0"), test.calculate(null));
+        assertEquals(new BigDecimal("3.0"), test.calculate(stayPeriod));
     }
 
     //Test student when under discount value
@@ -515,4 +515,6 @@ public class RateTests {
 
         assertEquals(new BigDecimal("3.0"), test.calculate(null));
     }
+
+
 }

@@ -13,6 +13,10 @@ public class Rate {
     private BigDecimal hourlyReducedRate;
     private ArrayList<Period> reduced = new ArrayList<>();
     private ArrayList<Period> normal = new ArrayList<>();
+    private final CalculateKindRate studentRate = new StudentRate();
+    private final CalculateKindRate staffRate = new StaffRate();
+    private final CalculateKindRate managementRate = new ManagementRate();
+    private final CalculateKindRate visitorRate = new VisitorRate();
 
     public Rate(CarParkKind kind, BigDecimal normalRate, BigDecimal reducedRate, ArrayList<Period> reducedPeriods
             , ArrayList<Period> normalPeriods) {
@@ -102,44 +106,15 @@ public class Rate {
         BigDecimal bigDecAmount = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).
                 add(this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
 
-        BigDecimal studentThreshold = new BigDecimal("5.5");
-        BigDecimal studentReductionPercentage = new BigDecimal("0.25");
-        BigDecimal staffMaxPayable = new BigDecimal("16.0");
-        BigDecimal managementMinPayable = new BigDecimal("3.0");
-        BigDecimal visitorThresholdAndDeduction = new BigDecimal("8.0");
-        BigDecimal visitorReductionPercentage = new BigDecimal("0.5");
-
         switch (kind) {
             case STUDENT:
-                if (bigDecAmount.compareTo(studentThreshold) == 1) {
-                    bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(studentReductionPercentage));
-                    return bigDecAmount;
-                }
-                break;
+                return studentRate.calculate(bigDecAmount);
             case STAFF:
-                if (bigDecAmount.compareTo(staffMaxPayable) == 1) {
-                    //maximum payable is 16.00 per day
-                    bigDecAmount = staffMaxPayable;
-                    return bigDecAmount;
-                }
-                break;
+                return staffRate.calculate(bigDecAmount);
             case MANAGEMENT:
-                if (bigDecAmount.compareTo(managementMinPayable) == -1) {
-                    //maximum payable is 16.00 per day
-                    bigDecAmount = managementMinPayable;
-                    return bigDecAmount;
-                }
-                break;
+                return managementRate.calculate(bigDecAmount);
             case VISITOR:
-                if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 ||
-                        bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
-                    //first 8.00 is free for visitor
-                    bigDecAmount = bigDecAmount.ZERO;
-                } else {
-                    bigDecAmount = bigDecAmount.subtract(visitorThresholdAndDeduction);
-                    bigDecAmount = bigDecAmount.multiply(visitorReductionPercentage);
-                }
-                break;
+                return visitorRate.calculate(bigDecAmount);
         }
         return bigDecAmount;
     }
