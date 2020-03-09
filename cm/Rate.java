@@ -96,34 +96,50 @@ public class Rate {
     }
 
     public BigDecimal calculate(Period periodStay) {
+        if(periodStay == null){throw new IllegalArgumentException("Stay period can not be null.");}
         int normalRateHours = periodStay.occurences(normal);
         int reducedRateHours = periodStay.occurences(reduced);
         BigDecimal bigDecAmount = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).
                 add(this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
 
-        if (this.kind == CarParkKind.STUDENT && bigDecAmount.compareTo(new BigDecimal("5.5")) == 1) {
-            bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(new BigDecimal("0.25")));
-            return bigDecAmount;
+        BigDecimal studentThreshold = new BigDecimal("5.5");
+        BigDecimal studentReductionPercentage = new BigDecimal("0.25");
+        BigDecimal staffMaxPayable = new BigDecimal("16.0");
+        BigDecimal managementMinPayable = new BigDecimal("3.0");
+        BigDecimal visitorThresholdAndDeduction = new BigDecimal("8.0");
+        BigDecimal visitorReductionPercentage = new BigDecimal("0.5");
 
-        } else if (this.kind == CarParkKind.STAFF && bigDecAmount.compareTo(new BigDecimal("16.0")) == 1) {
-            //maximum payable is 16.00 per day
-            bigDecAmount = new BigDecimal("16.0");
-            return bigDecAmount;
-
-        } else if (this.kind == CarParkKind.MANAGEMENT && bigDecAmount.compareTo(new BigDecimal("3.0")) == -1) {
-            //maximum payable is 16.00 per day
-            bigDecAmount = new BigDecimal("3.0");
-            return bigDecAmount;
-
-        } else if (this.kind == CarParkKind.VISITOR) {
-            if (bigDecAmount.compareTo(new BigDecimal("8.0")) <= 0) {
-                //first 8.00 is free for visitor
-                bigDecAmount = bigDecAmount.ZERO;
-            } else {
-                bigDecAmount = bigDecAmount.subtract(new BigDecimal("8.0"));
-                bigDecAmount = bigDecAmount.multiply(new BigDecimal("0.5"));
-            }
-            return bigDecAmount;
+        switch (kind) {
+            case STUDENT:
+                if (bigDecAmount.compareTo(studentThreshold) == 1) {
+                    bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(studentReductionPercentage));
+                    return bigDecAmount;
+                }
+                break;
+            case STAFF:
+                if (bigDecAmount.compareTo(staffMaxPayable) == 1) {
+                    //maximum payable is 16.00 per day
+                    bigDecAmount = staffMaxPayable;
+                    return bigDecAmount;
+                }
+                break;
+            case MANAGEMENT:
+                if (bigDecAmount.compareTo(managementMinPayable) == -1) {
+                    //maximum payable is 16.00 per day
+                    bigDecAmount = managementMinPayable;
+                    return bigDecAmount;
+                }
+                break;
+            case VISITOR:
+                if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 ||
+                        bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
+                    //first 8.00 is free for visitor
+                    bigDecAmount = bigDecAmount.ZERO;
+                } else {
+                    bigDecAmount = bigDecAmount.subtract(visitorThresholdAndDeduction);
+                    bigDecAmount = bigDecAmount.multiply(visitorReductionPercentage);
+                }
+                break;
         }
         return bigDecAmount;
     }

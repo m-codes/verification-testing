@@ -456,7 +456,7 @@ public class RateTests {
         Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
         Period stayPeriod = new Period(10, 11);
 
-        assertEquals(new BigDecimal("3.0"), test.calculate(stayPeriod));
+        assertEquals(new BigDecimal("3.0"), test.calculate(null));
     }
 
     //Test student when under discount value
@@ -495,5 +495,24 @@ public class RateTests {
         Period stayPeriod = new Period(10, 11);
 
         assertEquals(new BigDecimal("10"), test.calculate(stayPeriod));
+    }
+
+    //Test if stay period is equal to null
+    @Test(expected = IllegalArgumentException.class)
+    public void Should_ThrowException_IfStayPeriodEqualsNull() {
+        Period slot1 = new Period(10, 16);
+        Period slot2 = new Period(17, 22);
+        ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
+        ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
+        normalRatePeriod.add(slot1);
+        reducedRatePeriod.add(slot2);
+        BigDecimal normalRate = new BigDecimal(2);
+        BigDecimal reducedRate = new BigDecimal(1);
+        CarParkKind kind = CarParkKind.MANAGEMENT;
+
+        Rate test = new Rate(kind, normalRate, reducedRate, reducedRatePeriod, normalRatePeriod);
+        Period stayPeriod = new Period(10, 11);
+
+        assertEquals(new BigDecimal("3.0"), test.calculate(null));
     }
 }
