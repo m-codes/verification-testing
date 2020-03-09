@@ -25,7 +25,7 @@ public class Rate {
         if (normalRate.compareTo(BigDecimal.ZERO) < 0 || reducedRate.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("A rate cannot be negative");
         }
-        if (normalRate.compareTo(reducedRate) <= 0) {
+        if (normalRate.compareTo(reducedRate) < 0) {
             throw new IllegalArgumentException("The normal rate cannot be less or equal to the reduced rate");
         }
         if (!isValidPeriods(reducedPeriods) || !isValidPeriods(normalPeriods)) {
@@ -95,50 +95,37 @@ public class Rate {
         return isValid;
     }
 
-    private BigDecimal reductions(BigDecimal bigDecAmount) {
-        BigDecimal studentThreshold = new BigDecimal("5.5");
-        BigDecimal studentReductionPercentage = new BigDecimal("0.25");
-        BigDecimal staffMaxPayable = new BigDecimal("16.0");
-        BigDecimal managementMinPayable = new BigDecimal("3.0");
-        BigDecimal visitorThresholdAndDeduction = new BigDecimal("8.0");
-        BigDecimal visitorReductionPercentage = new BigDecimal("0.5");
-
-
-        if (this.kind == CarParkKind.STUDENT && bigDecAmount.compareTo(studentThreshold) == 1) {
-            bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(studentReductionPercentage));
-            return bigDecAmount;
-
-        } else if (this.kind == CarParkKind.STAFF && bigDecAmount.compareTo(staffMaxPayable) == 1) {
-            //maximum payable is 16.00 per day
-            bigDecAmount = staffMaxPayable;
-            return bigDecAmount;
-
-        } else if (this.kind == CarParkKind.MANAGEMENT && bigDecAmount.compareTo(managementMinPayable) == -1) {
-            //maximum payable is 16.00 per day
-            bigDecAmount = managementMinPayable;
-            return bigDecAmount;
-
-        } else if (this.kind == CarParkKind.VISITOR) {
-            if (bigDecAmount.compareTo(visitorThresholdAndDeduction) == -1 ||
-                    bigDecAmount.compareTo(visitorThresholdAndDeduction) == 0) {
-                //first 8.00 is free for visitor
-                bigDecAmount = bigDecAmount.ZERO;
-            } else {
-                bigDecAmount = bigDecAmount.subtract(visitorThresholdAndDeduction);
-                bigDecAmount = bigDecAmount.multiply(visitorReductionPercentage);
-            }
-        }
-        return bigDecAmount;
-    }
-
-
     public BigDecimal calculate(Period periodStay) {
         int normalRateHours = periodStay.occurences(normal);
         int reducedRateHours = periodStay.occurences(reduced);
         BigDecimal bigDecAmount = this.hourlyNormalRate.multiply(BigDecimal.valueOf(normalRateHours)).
                 add(this.hourlyReducedRate.multiply(BigDecimal.valueOf(reducedRateHours)));
-        BigDecimal newBigDecAmount = reductions(bigDecAmount);
 
-        return (newBigDecAmount);
+        if (this.kind == CarParkKind.STUDENT && bigDecAmount.compareTo(new BigDecimal("5.5")) == 1) {
+            bigDecAmount = bigDecAmount.subtract(bigDecAmount.multiply(new BigDecimal("0.25")));
+            return bigDecAmount;
+
+        } else if (this.kind == CarParkKind.STAFF && bigDecAmount.compareTo(new BigDecimal("16.0")) == 1) {
+            //maximum payable is 16.00 per day
+            bigDecAmount = new BigDecimal("16.0");
+            return bigDecAmount;
+
+        } else if (this.kind == CarParkKind.MANAGEMENT && bigDecAmount.compareTo(new BigDecimal("3.0")) == -1) {
+            //maximum payable is 16.00 per day
+            bigDecAmount = new BigDecimal("3.0");
+            return bigDecAmount;
+
+        } else if (this.kind == CarParkKind.VISITOR) {
+            if (bigDecAmount.compareTo(new BigDecimal("8.0")) == -1 ||
+                    bigDecAmount.compareTo(new BigDecimal("8.0")) == 0) {
+                //first 8.00 is free for visitor
+                bigDecAmount = bigDecAmount.ZERO;
+            } else {
+                bigDecAmount = bigDecAmount.subtract(new BigDecimal("8.0"));
+                bigDecAmount = bigDecAmount.multiply(new BigDecimal("0.5"));
+            }
+            return bigDecAmount;
+        }
+        return bigDecAmount;
     }
 }
