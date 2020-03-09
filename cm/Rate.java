@@ -116,8 +116,7 @@ public class Rate {
             return bigDecAmount;
 
         } else if (this.kind == CarParkKind.VISITOR) {
-            if (bigDecAmount.compareTo(new BigDecimal("8.0")) == -1 ||
-                    bigDecAmount.compareTo(new BigDecimal("8.0")) == 0) {
+            if (bigDecAmount.compareTo(new BigDecimal("8.0")) <= 0) {
                 //first 8.00 is free for visitor
                 bigDecAmount = bigDecAmount.ZERO;
             } else {

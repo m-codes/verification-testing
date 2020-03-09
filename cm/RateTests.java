@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 public class RateTests {
-//NR: Normal Rate, RR: Reduced Rate, NP: Normal Period, RP: Reduced Period, SP: Stay Period
+    //NR: Normal Rate, RR: Reduced Rate, NP: Normal Period, RP: Reduced Period, SP: Stay Period
     //    NR < RR
     @Test(expected = IllegalArgumentException.class)
     public void Should_ThrowException_NrLessThanRr() {
@@ -29,7 +29,7 @@ public class RateTests {
     @Test(expected = IllegalArgumentException.class)
     public void Should_ThrowException_NpGreaterThan24() {
         Period slot1 = new Period(22, 25);
-        Period slot2 = new Period(4,20);
+        Period slot2 = new Period(4, 20);
         ArrayList<Period> normalRatePeriod = new ArrayList<Period>();
         ArrayList<Period> reducedRatePeriod = new ArrayList<Period>();
         normalRatePeriod.add(slot1);
@@ -322,7 +322,7 @@ public class RateTests {
     }
 
     //Test 2 collections of periods where one list overlaps the other
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void Should_ThrowException_MultiplePeriodsOverlapping() {
         Period slot1 = new Period(10, 12);
         Period slot2 = new Period(12, 13);
@@ -496,9 +496,4 @@ public class RateTests {
 
         assertEquals(new BigDecimal("10"), test.calculate(stayPeriod));
     }
-
-
-
-
-
 }
