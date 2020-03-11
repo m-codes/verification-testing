@@ -2,12 +2,12 @@ package cm;
 
 import java.math.BigDecimal;
 
-public interface CalculateKindRate {
+public interface ICalculateStrategy {
     BigDecimal calculate(BigDecimal bigDecAmount);
 }
 
-class StudentRate implements CalculateKindRate {
-    @Override
+class StudentStrategy implements ICalculateStrategy {
+
     public BigDecimal calculate(BigDecimal bigDecAmount) {
         BigDecimal studentThreshold = new BigDecimal("5.5");
         BigDecimal studentReductionPercentage = new BigDecimal("0.25");
@@ -19,8 +19,8 @@ class StudentRate implements CalculateKindRate {
     }
 }
 
-class StaffRate implements CalculateKindRate {
-    @Override
+class StaffStrategy implements ICalculateStrategy {
+
     public BigDecimal calculate(BigDecimal bigDecAmount) {
         BigDecimal staffMaxPayable = new BigDecimal("16.0");
 
@@ -32,8 +32,8 @@ class StaffRate implements CalculateKindRate {
     }
 }
 
-class ManagementRate implements CalculateKindRate {
-    @Override
+class ManagementStrategy implements ICalculateStrategy {
+
     public BigDecimal calculate(BigDecimal bigDecAmount) {
         BigDecimal managementMinPayable = new BigDecimal("3.0");
 
@@ -45,8 +45,8 @@ class ManagementRate implements CalculateKindRate {
     }
 }
 
-class VisitorRate implements CalculateKindRate {
-    @Override
+class VisitorStrategy implements ICalculateStrategy {
+
     public BigDecimal calculate(BigDecimal bigDecAmount) {
         BigDecimal visitorThresholdAndDeduction = new BigDecimal("8.0");
         BigDecimal visitorReductionPercentage = new BigDecimal("0.5");

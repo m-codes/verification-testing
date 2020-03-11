@@ -13,10 +13,7 @@ public class Rate {
     private BigDecimal hourlyReducedRate;
     private ArrayList<Period> reduced = new ArrayList<>();
     private ArrayList<Period> normal = new ArrayList<>();
-    private final CalculateKindRate studentRate = new StudentRate();
-    private final CalculateKindRate staffRate = new StaffRate();
-    private final CalculateKindRate managementRate = new ManagementRate();
-    private final CalculateKindRate visitorRate = new VisitorRate();
+    private CalculateStrategyContext context = new CalculateStrategyContext();
 
     public Rate(CarParkKind kind, BigDecimal normalRate, BigDecimal reducedRate, ArrayList<Period> reducedPeriods
             , ArrayList<Period> normalPeriods) {
@@ -108,14 +105,18 @@ public class Rate {
 
         switch (kind) {
             case STUDENT:
-                return studentRate.calculate(bigDecAmount);
+                context.setCalculateStrategy(new StudentStrategy());
+                break;
             case STAFF:
-                return staffRate.calculate(bigDecAmount);
+                context.setCalculateStrategy(new StaffStrategy());
+                break;
             case MANAGEMENT:
-                return managementRate.calculate(bigDecAmount);
+                context.setCalculateStrategy(new ManagementStrategy());
+                break;
             case VISITOR:
-                return visitorRate.calculate(bigDecAmount);
+                context.setCalculateStrategy(new VisitorStrategy());
+                break;
         }
-        return bigDecAmount;
+        return context.calculateAmount(bigDecAmount);
     }
 }
